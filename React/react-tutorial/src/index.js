@@ -396,33 +396,121 @@ import './index.css'
 
 /// Lifting State Up
 
-function BoilingVerdict(props) {
-  if (props.celsius >= 100) {
-    return <p>The water would boil.</p>;
-  }
-  return <p>The water would not boil.</p>;
+// function BoilingVerdict(props) {
+//   if (props.celsius >= 100) {
+//     return <p>The water would boil.</p>;
+//   }
+//   return <p>The water would not boil.</p>;
+// }
+
+// class Calculator extends React.Component {
+//   constructor(props) {
+//     super(props)
+//     this.handleChange = this.handleChange.bind(this)
+//     this.state = {temperature: ''};
+//   }
+
+//   handleChange(e) {
+//     this.setState({temperature: e.target.value})
+//   }
+//   render() {
+//     const temperature = this.state.temperature
+//     return (
+//       <fieldset>
+//         <legend>Enter temperature in celsius</legend>
+//         <input value={temperature} onChange={this.handleChange} />
+//         <BoilingVerdict celsius={parseFloat(temperature)} />
+//       </fieldset>
+//     )
+//   }
+// }
+
+// ReactDOM.render(<Calculator />, document.getElementById('root'))
+
+
+//////////// Composition vs Inheritance
+
+// Containmenet
+
+// this is an example
+function FancyBorder(props) {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  );
 }
 
-class Calculator extends React.Component {
+
+// this can now be resuable a lot
+
+function Dialog(props) {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">
+        {props.title}
+      </h1>
+      <p className="Dialog-message">
+        {props.message}
+      </p>
+    </FancyBorder>
+  );
+}
+
+function WelcomeDialog() {
+  return (
+    <Dialog
+      title="Welcome"
+      message="Thank you for visiting our spacecraft!" />
+  );
+}
+
+
+/// Composition works equally well for components defined as classes:
+
+function Dialog(props) {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">
+        {props.title}
+      </h1>
+      <p className="Dialog-message">
+        {props.message}
+      </p>
+      {props.children}
+    </FancyBorder>
+  );
+}
+
+class SignUpDialog extends React.Component {
   constructor(props) {
-    super(props)
-    this.handleChange = this.handleChange.bind(this)
-    this.state = {temperature: ''};
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSignUp = this.handleSignUp.bind(this);
+    this.state = {login: ''};
+  }
+
+  render() {
+    return (
+      <Dialog title="Mars Exploration Program"
+              message="How should we refer to you?">
+        <input value={this.state.login}
+               onChange={this.handleChange} />
+        <button onClick={this.handleSignUp}>
+          Sign Me Up!
+        </button>
+      </Dialog>
+    );
   }
 
   handleChange(e) {
-    this.setState({temperature: e.target.value})
+    this.setState({login: e.target.value});
   }
-  render() {
-    const temperature = this.state.temperature
-    return (
-      <fieldset>
-        <legend>Enter temperature in celsius</legend>
-        <input value={temperature} onChange={this.handleChange} />
-        <BoilingVerdict celsius={parseFloat(temperature)} />
-      </fieldset>
-    )
+
+  handleSignUp() {
+    alert(`Welcome aboard, ${this.state.login}!`);
   }
 }
 
-ReactDOM.render(<Calculator />, document.getElementById('root'))
+
+// final chapter is how to think in react
